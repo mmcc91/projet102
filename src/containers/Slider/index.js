@@ -1,58 +1,67 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react"; // ajout de useRef pour le timer 
 import { useData } from "../../contexts/DataContext";
 import { getMonth } from "../../helpers/Date";
-
 import "./style.scss";
 
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
-  const byDateDesc = data?.focus.sort((evtA, evtB) =>
+  const byDateDesc = data?.focus?.sort((evtA, evtB) =>
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
-  const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length ? index + 1 : 0),
-      5000
-    );
+
+  const timeoutRef = useRef(null); // ajout de useRef pour le timer
+
+  const nextCard = () => { 
+    setIndex((prevIndex) => (prevIndex === byDateDesc.length - 1 ? 0 : prevIndex + 1)); // si on est au dernier element on revient au premier
   };
-  useEffect(() => {
-    nextCard();
-  });
+
+  useEffect(() => { // ajout de useEffect pour le timer 
+    if (byDateDesc) {
+      timeoutRef.current = setTimeout(() => { // ajout de setTimeout pour le timer
+        nextCard();
+      }, 5000);
+    }
+    return () => clearTimeout(timeoutRef.current);
+  }, [index, byDateDesc]);
+
+  const handleRadioChange = (idx) => { // ajout de handleRadioChange pour le timer
+    setIndex(idx);
+    clearTimeout(timeoutRef.current);
+  };
+
   return (
     <div className="SlideCardList">
-      {byDateDesc?.map((event, idx) => (
-        <>
-          <div
-            key={event.title}
-            className={`SlideCard SlideCard--${
-              index === idx ? "display" : "hide"
-            }`}
-          >
-            <img src={event.cover} alt="forum" />
-            <div className="SlideCard__descriptionContainer">
-              <div className="SlideCard__description">
-                <h3>{event.title}</h3>
-                <p>{event.description}</p>
-                <div>{getMonth(new Date(event.date))}</div>
-              </div>
+      {byDateDesc?.map((event, idx) => ( 
+        // besoi n dune clef unique dou title 
+        <div key={event.title} className={`SlideCard SlideCard--${idx === index ? "display" : "hide"}`}> 
+        {/* ajout de idx pour le timer */}
+          <img src={event.cover} alt="forum" />
+          <div className="SlideCard__descriptionContainer">
+            <div className="SlideCard__description">
+              <h3>{event.title}</h3>
+              <p>{event.description}</p>
+              <div>  {getMonth(new Date(event.date))}</div>
             </div>
           </div>
-          <div className="SlideCard__paginationContainer">
-            <div className="SlideCard__pagination">
-              {byDateDesc.map((_, radioIdx) => (
-                <input
-                  key={`${event.id}`}
-                  type="radio"
-                  name="radio-button"
-                  checked={idx === radioIdx}
-                />
-              ))}
-            </div>
-          </div>
-        </>
+        </div>
       ))}
-    </div>
+
+      <div className="SlideCard__paginationContainer">
+        <div className="SlideCard__pagination">
+          {byDateDesc?.map((event, radioIdx) => (
+            <input
+              key={event.id}
+              type="radio"
+              name="radio-button"
+              checked={index === radioIdx}
+              onChange={() => handleRadioChange(radioIdx)}
+            />
+          ))}
+        </div>
+      </div>
+{/* // car display derriere  */}
+    </div> 
   );
 };
 

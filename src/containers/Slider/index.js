@@ -35,7 +35,7 @@ const Slider = () => {
       {byDateDesc?.map((event, idx) => ( 
         // besoi n dune clef unique dou title 
         <div key={event.title} className={`SlideCard SlideCard--${idx === index ? "display" : "hide"}`}> 
-        {/* ajout de idx pour le timer */}
+        {/* ajout de idx pour le timer , le event.title est la clef cela permet denlever l'erreur react/no-array-index-key */}
           <img src={event.cover} alt="forum" />
           <div className="SlideCard__descriptionContainer">
             <div className="SlideCard__description">
@@ -51,7 +51,8 @@ const Slider = () => {
         <div className="SlideCard__pagination">
           {byDateDesc?.map((event, radioIdx) => (
             <input
-              key={event.id}
+              key={event.id} 
+              // ajout de key pour le timer enlever l'erreur react/no-array-index-key
               type="radio"
               name="radio-button"
               checked={index === radioIdx}

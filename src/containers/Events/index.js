@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import EventCard from "../../components/EventCard";
 import Select from "../../components/Select";
 import { useData } from "../../contexts/DataContext";
@@ -11,27 +11,49 @@ const PER_PAGE = 9;
 
 const EventList = () => {
   const { data, error } = useData();
-  const [type, setType] = useState();
+  const [type, setType] = useState(null);
+  // par défaut, le type est null.rien n'est selectionne 
   const [currentPage, setCurrentPage] = useState(1);
-  const filteredEvents = (
-    (!type
-      ? data?.events
-      : data?.events) || []
-  ).filter((event, index) => {
-    if (
-      (currentPage - 1) * PER_PAGE <= index &&
-      PER_PAGE * currentPage > index
-    ) {
-      return true;
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [typeList, setTypeList] = useState([]);
+
+  // ajout filteredEvents et typeList, avec useState([]). 
+  // Ces états sont utilisés pour stocker respectivement 
+  // la liste des événements filtrés et la liste des types d'événements.
+
+
+
+  const filterEvents = () => {
+    let eventsToDisplay = data?.events || [];
+    if (type) {
+      eventsToDisplay = eventsToDisplay.filter((event) => event.type === type);
     }
-    return false;
-  });
-  const changeType = (evtType) => {
-    setCurrentPage(1);
-    setType(evtType);
+    const startIndex = (currentPage - 1) * PER_PAGE;
+    const endIndex = startIndex + PER_PAGE;
+    const paginatedEvents = eventsToDisplay.slice(startIndex, endIndex);
+    setFilteredEvents(paginatedEvents);
   };
-  const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE) + 1;
-  const typeList = new Set(data?.events.map((event) => event.type));
+
+
+    useEffect(() => {
+    if (data && data.events) {
+      setTypeList(Array.from(new Set(data?.events.map((event) => event.type))));
+      filterEvents();
+    }
+  }, [data, type, currentPage]);
+
+  // ajout de useEffect pour mettre à jour les événements filtrés , 
+  // se declanche à chaque fois que data, type ou currentPage change ,
+  //  met à jour la liste des types d'événements et filtre les événements à afficher.
+
+  const changeType = (value) => {
+    setCurrentPage(1);
+    setType(value);
+    filterEvents(); // Appel à filterEvents après la mise à jour de type
+  };
+
+  const pageNumber = Math.ceil( (filteredEvents?.length || 0) / PER_PAGE) ;
+
   return (
     <>
       {error && <div>An error occured</div>}

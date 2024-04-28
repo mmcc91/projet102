@@ -12,10 +12,11 @@ const Form = ({ onSuccess, onError }) => {
     async (evt) => {
       evt.preventDefault();
       setSending(true);
-      // We try to call mockContactApi
+      // We try to call mockContactApi donc on doit attendre la réponse 
       try {
         await mockContactApi();
         setSending(false);
+        onSuccess(); // Si la réponse est ok on appelle onSuccess
       } catch (err) {
         setSending(false);
         onError(err);
@@ -35,6 +36,7 @@ const Form = ({ onSuccess, onError }) => {
             label="Personel / Entreprise"
             type="large"
             titleEmpty
+          
           />
           <Field placeholder="" label="Email" />
           <Button type={BUTTON_TYPES.SUBMIT} disabled={sending}>
@@ -46,6 +48,7 @@ const Form = ({ onSuccess, onError }) => {
             placeholder="message"
             label="Message"
             type={FIELD_TYPES.TEXTAREA}
+           
           />
         </div>
       </div>

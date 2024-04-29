@@ -15,8 +15,8 @@ const Form = ({ onSuccess, onError }) => {
       // We try to call mockContactApi donc on doit attendre la réponse 
       try {
         await mockContactApi();
-         onSuccess(); // Si la réponse est ok on appelle onSuccess
         setSending(false);
+        onSuccess(); // Si la réponse est ok on appelle onSuccess
        
       } catch (err) {
         setSending(false);
@@ -41,7 +41,7 @@ const Form = ({ onSuccess, onError }) => {
           />
           <Field placeholder="email" label="Email" required/>
           <Button type={BUTTON_TYPES.SUBMIT} disabled={sending}>
-            {sending ? "En cours" :"Envoyer"}
+            {sending ? "En cours" : "Envoyer" } 
           </Button>
         </div>
         <div className="col">

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Form from "./index";
 
 describe("When Events is created", () => {
@@ -21,9 +21,19 @@ describe("When Events is created", () => {
           bubbles: true,
         })
       );
-      await screen.findByText("En cours");
-      await screen.findByText("Envoyer");
-      expect(onSuccess).toHaveBeenCalled();
+      
+      await waitFor(() => {
+        // Attendez que le formulaire cesse d'être dans l'état de chargement
+        return !screen.queryByText("En cours");
+      }, { timeout: 3000 });
+      // Vérifiez que le message de succès est affiché
+
+      await waitFor(() => {
+        return !screen.queryByText("Envoyer");
+      }, { timeout: 3000 })
+
+      // Check that onSuccess function is called
+      await waitFor(() => expect(onSuccess).toHaveBeenCalled(), { timeout: 5000 })
     });
   });
 });

@@ -50,6 +50,7 @@ const Slider = () => {
       <div className="SlideCard__paginationContainer">
         <div className="SlideCard__pagination">
           {byDateDesc?.map((event, radioIdx) => (
+            
             <input
               key={event.id} 
               // ajout de key pour le timer enlever l'erreur react/no-array-index-key

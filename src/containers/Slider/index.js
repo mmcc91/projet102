@@ -6,7 +6,7 @@ import "./style.scss";
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
-  const byDateDesc = data?.focus?.sort((evtA, evtB) =>
+  const byDateDesc = data?.focus?.sort((evtA, evtB) => // trie decroissant par date
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
 
@@ -20,7 +20,7 @@ const Slider = () => {
     if (byDateDesc) {
       timeoutRef.current = setTimeout(() => { // ajout de setTimeout pour le timer
         nextCard();
-      }, 5000);
+      }, 5000); // ajout de 5secondes pour le timer 
     }
     return () => clearTimeout(timeoutRef.current);
   }, [index, byDateDesc]);
@@ -62,7 +62,7 @@ const Slider = () => {
           ))}
         </div>
       </div>
-{/* // car display derriere  */}
+{/* suppressions des deux boutons onclick car display derriere  */}
     </div> 
   );
 };

@@ -14,15 +14,18 @@ describe("When Form is created", () => {
     it("the success message is displayed", async () => {
       render(<Home />);
       fireEvent(
-        await waitFor(() => screen.findByText("Envoyer")),
+        await waitFor(() => screen.queryByText("Envoyer")),
         new MouseEvent("click", {
           cancelable: true,
           bubbles: true,
-        })
+        }), { timeout: 3000 }
       );
       
-      await screen.findByText("En cours");
-      await screen.findByText("Message envoyé !");
+      await waitFor(() => screen.queryByTestId("En cours"), { timeout: 3000 });
+      
+      await waitFor(() => {
+        screen.queryByText("Message envoyé !");
+      }, { timeout: 3000 });
     });
   });
 

@@ -21,7 +21,7 @@ describe("When Form is created", () => {
         }), { timeout: 3000 }
       );
       
-      await waitFor(() => screen.queryByTestId("En cours"), { timeout: 3000 });
+      await waitFor(() => screen.queryByText("En cours"), { timeout: 3000 });
       
       await waitFor(() => {
         screen.queryByText("Message envoyé !");

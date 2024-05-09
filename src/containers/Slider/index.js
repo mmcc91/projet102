@@ -7,7 +7,7 @@ const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
   const byDateDesc = data?.focus?.sort((evtB, evtA) => // trie decroissant par date
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
+    new Date(evtB.date) < new Date(evtA.date) ? -1 : 1
   );
 
   const timeoutRef = useRef(null); // ajout de useRef pour le timer
